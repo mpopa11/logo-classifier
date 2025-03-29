@@ -53,19 +53,15 @@ Given the challenges with pHash, I decided to use **SSIM (Structural Similarity 
 SSIM provides a similarity score between **0 and 1**:
 - `1` → Identical images
 - `0` → Completely different images
-
 #### **SSIM Formula**
+
 For two images **X** and **Y**, SSIM is calculated as:
 
-\[ SSIM(X,Y) = \frac{(2\mu_X\mu_Y + C_1)(2\sigma_{XY} + C_2)}{(\mu_X^2 + \mu_Y^2 + C_1)(\sigma_X^2 + \sigma_Y^2 + C_2)} \]
+$$
+SSIM(X,Y) = \frac{(2\mu_X\mu_Y + C_1)(2\sigma_{XY} + C_2)}{(\mu_X^2 + \mu_Y^2 + C_1)(\sigma_X^2 + \sigma_Y^2 + C_2)}
+$$
 
-Where:
-- **\( \mu_X, \mu_Y \)** → Mean values of the images
-- **\( \sigma_X^2, \sigma_Y^2 \)** → Variances of the images
-- **\( \sigma_{XY} \)** → Covariance between images
-- **\( C_1, C_2 \)** → Small constants to stabilize the division
-
----
+--- 
 
 ## **5. Graph-Based Clustering with SSIM**
 
