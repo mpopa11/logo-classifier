@@ -179,53 +179,6 @@ def group_logos_by_ssim(folder, threshold=0.75, output_file="logo_groups_test.tx
     print(f"Logo groups saved to {output_file}")
     return groups
 
-# DBSCAN clustering 
-
-def extract_features(image_data):
-    """Converts images to feature vectors by flattening."""
-    return np.array([img.flatten() for img in image_data.values()])
-
-def cluster_images_dbscan(features, image_list, eps=5.0, min_samples=2):
-    """Clusters images using DBSCAN."""
-    clustering = DBSCAN(eps=eps, min_samples=min_samples).fit(features)
-    return clustering.labels_
-
-def save_clusters(folder, image_list, labels):
-    """Saves the clusters as text files with image lists for each groups"""
-    output_dir = os.path.join(os.path.dirname(folder), "clusters_dbscan.txt")
-    
-    with open(output_dir, "w") as f:
-        cluster_id = 0
-        for label in sorted(set(labels)):
-            group_images = [img for img, lbl in zip(image_list, labels) if lbl == label]
-            if label == -1:
-                for img in group_images:
-                    f.write(f"Group {cluster_id}:{img}\n\n")
-                    cluster_id += 1
-            else:
-                f.write(f"Group {cluster_id}:")
-                f.write("\n".join(group_images) + "\n\n")
-                cluster_id += 1
-            print(f"Group {cluster_id}: {group_images}")
-
-def process_images_dbscan(folder, eps=5.0, min_samples=2):
-    """Processes images and clusters them using DBSCAN."""
-    images = [f for f in os.listdir(folder) if f.endswith(('.png', '.jpg', '.jpeg', '.webp', '.bmp', '.gif'))]
-    if not images:
-        print("No logos found in the folder.")
-        return
-
-    image_data = {img: load_and_preprocess(os.path.join(folder, img)) for img in images}
-    image_data = {k: v for k, v in image_data.items() if v is not None}
-    if not image_data:
-        print("No readable images found.")
-        return
-
-    features = extract_features(image_data)
-    labels = cluster_images_dbscan(features, list(image_data.keys()), eps, min_samples)
-    save_clusters(folder, list(image_data.keys()), labels)
-    print("Clusters saved using DBSCAN.")
-
 # Scraping
 unique_sites = list(dict.fromkeys(pd.read_csv("sites.csv", header=None).transpose().values[0]))
 
@@ -245,8 +198,3 @@ if logo_groups:
         print(f"Group {i}: {list(group)}")
 else:
     print("No similar logos found.")
-
-# Clustering using DBSCAN
-
-folder = "logos"
-process_images_dbscan(folder, eps=500.0, min_samples=2)
